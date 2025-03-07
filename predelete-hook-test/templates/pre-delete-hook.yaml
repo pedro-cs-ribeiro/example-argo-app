@@ -1,0 +1,20 @@
+{{- if .Values.preDeleteHook.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Release.Name }}-pre-delete-hook
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-pre-delete-hook
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    argocd.argoproj.io/hook: "PreDelete"
+    argocd.argoproj.io/hook-delete-policy: "HookSucceeded"
+spec:
+  restartPolicy: Never
+  containers:
+    - name: pre-delete-hook
+      image: "{{ .Values.preDeleteHook.image.repository }}:{{ .Values.preDeleteHook.image.tag }}"
+      command: {{ .Values.preDeleteHook.command | toYaml | nindent 8 }}
+{{- end }}

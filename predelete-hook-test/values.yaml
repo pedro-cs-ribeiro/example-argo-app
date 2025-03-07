@@ -1,0 +1,22 @@
+# Default values for my-nginx-app
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: stable
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+# PreDelete hook configuration
+preDeleteHook:
+  enabled: true
+  image:
+    repository: busybox
+    tag: latest
+  command:
+    - /bin/sh
+    - -c
+    - sleep 15 && echo hello from the pre-delete-hook pod
